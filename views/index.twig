@@ -1,0 +1,13 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+  <h1>{{title}}</h1>
+  <p>Welcome to {{title}}</p>
+  <form class="app-js-barcode-form">
+    <label>Barcode: <input class="app-js-barcode-input"></label>
+    <label>Multiple barcodes (one per line):<textarea class="app-js-multiple-barcode-input"></textarea></label>
+  </form>
+  <label>Storage Name: <input class="app-js-storage-name-input"></label>
+  <button type="button" class="app-js-upload">Upload Current Items</button>
+  <script src="./js/main.js"></script>
+{% endblock %}

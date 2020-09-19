@@ -1,0 +1,31 @@
+version: "3.8"
+services:
+  db:
+    image: library/postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: manager
+      POSTGRES_PASSWORD: invmanager
+      POSTGRES_DB: inventory_manager
+    volumes:
+      - ../var/postgres-data:/var/lib/postgresql/data
+  flyway:
+    image: flyway/flyway:6.5.6
+    command: -schemas=public -user=manager -password=invmanager migrate
+    environment:
+      FLYWAY_EDITION: community
+      FLYWAY_URL: jdbc:postgresql://db/inventory_manager
+    volumes:
+    - ../flyway/sql:/flyway/sql
+    - ../flyway/conf:/flyway/conf
+    depends_on:
+      - db
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      ADMINER_DESIGN: 'pepa-linha-dark'
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
