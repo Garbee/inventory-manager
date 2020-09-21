@@ -67,14 +67,23 @@ uploadButton.addEventListener('click', async function() {
     return;
   }
 
+  const query = `
+    {
+      locations {
+        id
+      }
+    }
+  `;
   const response = await fetch(`${window.origin}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      'X-Hasura-Admin-Secret': '',
-    }
-  })
+    },
+    body: JSON.stringify({
+      query
+    })
+  }).then(res => res.json());
 
 
   currentItems.clear();

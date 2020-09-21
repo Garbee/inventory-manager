@@ -1,9 +1,14 @@
 const {
-  GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLSchema, GraphQLList, GraphQLNonNull,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLInt,
+  GraphQLSchema,
+  GraphQLList,
+  GraphQLNonNull,
 } = require('graphql');
 
-const StorageLocationType = new GraphQLObjectType({
-  name: 'StorageLocation',
+const LocationType = new GraphQLObjectType({
+  name: 'location',
   fields: {
     id: {
       type: GraphQLString,
@@ -20,15 +25,15 @@ const StorageLocationType = new GraphQLObjectType({
 const rootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
   fields: {
-    storageLocation: {
-      type: StorageLocationType,
+    location: {
+      type: LocationType,
       args: {
         id: {type: GraphQLString},
       },
     },
-    storageLocations: {
-      type: GraphQLList(StorageLocationType),
-      resolve(parentValue, args) {
+    locations: {
+      type: GraphQLList(LocationType),
+      resolve(parentValue:any, args:any) {
 
       }
     }
@@ -39,7 +44,7 @@ const mutation = new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     addStorageLocation: {
-      type: StorageLocationType,
+      type: LocationType,
       args: {
         name: {
           type: GraphQLNonNull(GraphQLString),
@@ -52,10 +57,6 @@ const mutation = new GraphQLObjectType({
   }
 });
 
-const schema = new GraphQLSchema({
+export const schema = new GraphQLSchema({
   query: rootQuery,
 });
-
-module.exports = {
-  schema,
-};

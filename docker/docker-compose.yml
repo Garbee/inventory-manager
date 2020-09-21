@@ -3,18 +3,23 @@ services:
   db:
     image: library/postgres:13
     restart: always
+    ports:
+      - 5432:5432
     environment:
-      POSTGRES_USER: manager
-      POSTGRES_PASSWORD: invmanager
-      POSTGRES_DB: inventory_manager
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
     volumes:
       - ../var/postgres-data:/var/lib/postgresql/data
   flyway:
     image: flyway/flyway:6.5.6
-    command: -schemas=public -user=manager -password=invmanager migrate
+    command: migrate
     environment:
       FLYWAY_EDITION: community
-      FLYWAY_URL: jdbc:postgresql://db/inventory_manager
+      FLYWAY_DEFAULT_SCHEMA: ${DATABASE_SCHEMA}
+      FLYWAY_USER: ${DATABASE_USER}
+      FLYWAY_PASSWORD: ${DATABASE_PASSWORD}
+      FLYWAY_URL: jdbc:postgresql://db/${DATABASE_NAME}
     volumes:
     - ../flyway/sql:/flyway/sql
     - ../flyway/conf:/flyway/conf
@@ -25,8 +30,8 @@ services:
     restart: always
     image: sosedoff/pgweb
     ports:
-      - "8081:8081"
+      - 8081:8081
     environment:
-      - DATABASE_URL=postgres://manager:invmanager@db/inventory_manager?sslmode=disable
+      - DATABASE_URL=postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@db/${DATABASE_NAME}?sslmode=disable
     depends_on:
       - db
