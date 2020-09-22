@@ -7,7 +7,7 @@ import * as inert from '@hapi/inert';
 import * as graphi from 'graphi';
 // @ts-ignore
 import * as blipp from 'blipp';
-import {schema} from './database/schema';
+import {schema, rootValue} from './database/schema';
 
 (async () => {
   const publicPath = resolve(__dirname, '..', 'src', 'public');
@@ -30,16 +30,8 @@ import {schema} from './database/schema';
   await server.register({
     plugin: graphi,
     options: {
-      schema
-    }
-  });
-
-  server.route({
-    method: 'graphql',
-    path: '/graphql',
-    handler: async (request: hapi.Request, response: hapi.ResponseToolkit) => {
-      request.logger.log('Hitting GraphQL handler');
-      return {};
+      schema,
+      resolvers: rootValue,
     }
   });
 

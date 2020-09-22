@@ -9,18 +9,22 @@ const databaseConfig = {
   "database": process.env.DATABASE_NAME,
   "user": process.env.DATABASE_USER,
   "password": process.env.DATABASE_PASSWORD,
+  capSQL: true,
 };
 
 type ExtendedProtocol = pgPromise.IDatabase<IExtensions> & IExtensions;
 
 // pg-promise initialization options:
 const initOptions: pgPromise.IInitOptions<IExtensions> = {
+  query(e: pgPromise.IEventContext) {
+    console.log(e.query);
+  },
   extend(obj: ExtendedProtocol, dc: any) {
     obj.locations = new LocationsRepository(obj, pgp);
   },
   receive(
       data: any[], result: pgPromise.IResultExt,
-      e: pgPromise.IEventContext<IClient>) {
+      e: pgPromise.IEventContext) {
     result.rows = camelcaseKeys(data);
   }
 };

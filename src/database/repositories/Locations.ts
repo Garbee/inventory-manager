@@ -4,7 +4,15 @@ import {locations as sql} from '../sql';
 import * as uuidValidate from 'uuid-validate';
 import {Location} from '../models';
 
+export interface LocationInputData {
+  name: string;
+  area?: string;
+  returning?: Array<string>;
+}
+
 export class LocationsRepository {
+  table: string = 'locations';
+
   columns: Array<string> = [
       'id',
       'name',
@@ -91,5 +99,14 @@ export class LocationsRepository {
     const getRowCount = (r: IResult) => r.rowCount;
 
     return this.db.result(sql.removeById, values, getRowCount);
+  }
+
+  async create(data: LocationInputData, columns: Array<string>): Promise<Partial<Location>> {
+    const insert = this.pgp.helpers.insert(data, null, this.table);
+    const query = `${insert} RETURNING $1:name`;
+    return await this.db.one(query, [this.normalizeTimestampColumns(columns)]).then(data => {
+      console.log(data);
+      return data;
+    });
   }
 }
