@@ -1,7 +1,17 @@
 import {IDatabase, IMain} from 'pg-promise';
 import {IResult} from 'pg-promise/typescript/pg-subset';
+import {locations as sql} from '../sql';
+import * as uuidValidate from 'uuid-validate';
+import {Location} from '../models';
 
 export class LocationsRepository {
+  columns: Array<string> = [
+      'id',
+      'name',
+      'area',
+      'created_at',
+      'updated_at',
+  ];
   /**
    * @param db
    * Automated database connection context/interface.
@@ -23,5 +33,63 @@ export class LocationsRepository {
     this.pgp = pgp;
   }
 
-  async find() {}
+  private validateUuid(identifier: string): void {
+    if (!uuidValidate(identifier, 4)) {
+      throw new Error(
+          `Invalid identifier provided. Must be a UUID Version 4. ID: ${identifier}`,
+      );
+    }
+  }
+
+  private validateRequestedColumns(columns: Array<string>): void {
+    columns.forEach((column) => {
+      if (!this.columns.includes(column)) {
+        if (column === 'updatedAt' || column === 'createdAt') {
+          return;
+        }
+        throw new Error(
+            `Column ${column} requested which does not exist on table.`,
+        );
+      }
+    });
+  }
+
+  private normalizeTimestampColumns(columns: Array<string>): Array<string> {
+    columns[columns.indexOf('createdAt')] = 'created_at';
+    columns[columns.indexOf('updatedAt')] = 'updated_at';
+
+    return columns;
+  }
+
+  /**
+   * Retrieve a location by its primary key.
+   */
+  async findById(identifier: string, columns: Array<string>): Promise<Partial<Location> | null> {
+    this.validateUuid(identifier);
+    this.validateRequestedColumns(columns);
+
+    return await this.db.oneOrNone(sql.findById, {
+      identifier,
+      columns: this.normalizeTimestampColumns(columns),
+    });
+  }
+
+  async all(columns: Array<string>): Promise<Partial<Location>[]> {
+    this.validateRequestedColumns(columns);
+    const values = {
+      columns: this.normalizeTimestampColumns(columns),
+      where: '',
+    };
+    return this.db.any(sql.getAll, values)
+  }
+
+  async remove(identifier: string): Promise<number> {
+    this.validateUuid(identifier);
+    const values = {
+      identifier,
+    };
+    const getRowCount = (r: IResult) => r.rowCount;
+
+    return this.db.result(sql.removeById, values, getRowCount);
+  }
 }

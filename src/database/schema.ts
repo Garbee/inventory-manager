@@ -1,22 +1,31 @@
-const {
+import {
   GraphQLObjectType,
+  GraphQLID,
   GraphQLString,
-  GraphQLInt,
   GraphQLSchema,
   GraphQLList,
   GraphQLNonNull,
-} = require('graphql');
+  GraphQLResolveInfo,
+} from 'graphql';
+import * as graphqlFields from 'graphql-fields';
+import {db} from './connection';
 
 const LocationType = new GraphQLObjectType({
   name: 'location',
   fields: {
     id: {
-      type: GraphQLString,
+      type: GraphQLID,
     },
     name: {
       type: GraphQLString,
     },
     area: {
+      type: GraphQLString,
+    },
+    createdAt: {
+      type: GraphQLString,
+    },
+    updatedAt: {
       type: GraphQLString,
     },
   },
@@ -28,13 +37,17 @@ const rootQuery = new GraphQLObjectType({
     location: {
       type: LocationType,
       args: {
-        id: {type: GraphQLString},
+        id: {type: GraphQLID},
       },
     },
     locations: {
       type: GraphQLList(LocationType),
-      resolve(parentValue:any, args:any) {
+      resolve(root:any, args:any, context:any, info:GraphQLResolveInfo) {
+        // @ts-ignore
+        const fields = graphqlFields(info, null, 2);
+        const columns = Object.keys(fields);
 
+        return db.locations.all(columns);
       }
     }
   },
