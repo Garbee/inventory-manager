@@ -6,6 +6,7 @@
     "build": "tsc",
     "db:up": "docker-compose --file docker/docker-compose.yml --env-file ./.env up -d",
     "db:down": "docker-compose --file docker/docker-compose.yml down",
+    "db:seed": "ts-node dev/database/seed.ts",
     "dev": "ts-node src/server.ts",
     "start": "ts-node src/server.ts"
   },
@@ -24,6 +25,7 @@
     "debug": "~2.6.9",
     "decamelcase-keys": "^1.1.1",
     "dotenv": "^8.2.0",
+    "faker": "^5.1.0",
     "graphi": "^9.0.0",
     "graphql": "14.5.x",
     "graphql-fields": "^2.0.3",
@@ -35,6 +37,7 @@
     "uuid-validate": "0.0.3"
   },
   "devDependencies": {
+    "@types/faker": "^5.1.0",
     "@types/hapi-pino": "^8.0.0",
     "@types/hapi__hapi": "^20.0.0",
     "@types/hapi__inert": "^5.2.0"

@@ -105,7 +105,6 @@ export class LocationsRepository {
     const insert = this.pgp.helpers.insert(data, null, this.table);
     const query = `${insert} RETURNING $1:name`;
     return await this.db.one(query, [this.normalizeTimestampColumns(columns)]).then(data => {
-      console.log(data);
       return data;
     });
   }
