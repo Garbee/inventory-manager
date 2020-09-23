@@ -1,10 +1,9 @@
-import {LocationsRepository} from './Locations';
+import { LocationsRepository } from "./Locations";
+import { ItemsRepository } from "./Items";
 
 interface IExtensions {
-  locations: LocationsRepository,
+  locations: LocationsRepository;
+  items: ItemsRepository;
 }
 
-export {
-  IExtensions,
-  LocationsRepository,
-};
+export { IExtensions, LocationsRepository, ItemsRepository };

@@ -5,3 +5,14 @@ export interface Location {
   updatedAt?: string;
   createdAt?: string;
 }
+
+export interface Item {
+  id: string;
+  industryIdentifiers?: object;
+  name?: string;
+  title?: string;
+  subtitle?: string;
+  locationId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}

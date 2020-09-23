@@ -1,19 +1,16 @@
+import { QueryFile, IQueryFileOptions } from "pg-promise";
 
-import {QueryFile, IQueryFileOptions} from 'pg-promise';
-
-const {join: joinPath} = require('path');
+const { join: joinPath } = require("path");
 
 ///////////////////////////////////////////////
 // Helper for linking to external query files;
-const sql = function(file: string): QueryFile {
-
+const sql = function (file: string): QueryFile {
   const fullPath: string = joinPath(__dirname, file);
 
   const options: IQueryFileOptions = {
-
     // minifying the SQL is always advised;
     // see also option 'compress' in the API;
-    minify: true
+    minify: true,
 
     // See also property 'params' for two-step template formatting
   };
@@ -31,10 +28,16 @@ const sql = function(file: string): QueryFile {
 
   // See QueryFile API:
   // http://vitaly-t.github.io/pg-promise/QueryFile.html
-}
+};
 
 export const locations = {
-  findById: sql('./locations/findById.sql'),
-  getAll: sql('./locations/all.sql'),
-  removeById: sql('./locations/removeById.sql'),
+  findById: sql("./locations/findById.sql"),
+  getAll: sql("./locations/all.sql"),
+  removeById: sql("./locations/removeById.sql"),
+};
+
+export const items = {
+  findById: sql("./items/findById.sql"),
+  getAll: sql("./items/all.sql"),
+  removeById: sql("./items/removeById.sql"),
 };

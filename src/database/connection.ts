@@ -1,7 +1,11 @@
-import * as pgPromise from "pg-promise";
-import { LocationsRepository, IExtensions } from "./repositories";
+import pgPromise from "pg-promise";
+import {
+  LocationsRepository,
+  ItemsRepository,
+  IExtensions,
+} from "./repositories";
 import { IClient } from "pg-promise/typescript/pg-subset";
-import * as camelcaseKeys from "camelcase-keys";
+import camelcaseKeys from "camelcase-keys";
 
 const databaseConfig = {
   host: process.env.DATABASE_HOST,
@@ -21,6 +25,7 @@ const initOptions: pgPromise.IInitOptions<IExtensions> = {
   },
   extend(obj: ExtendedProtocol, dc: any) {
     obj.locations = new LocationsRepository(obj, pgp);
+    obj.items = new ItemsRepository(obj, pgp);
   },
   receive(
     data: any[],

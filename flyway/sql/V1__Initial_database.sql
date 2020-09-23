@@ -34,7 +34,7 @@ CREATE TABLE locations (
 
 CREATE TABLE items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    industryIdentifiers JSONB,
+    industry_identifiers JSONB,
     name TEXT NULL,
     title TEXT NULL,
     subtitle TEXT NULL,
